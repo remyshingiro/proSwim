@@ -1,5 +1,19 @@
 import React, { useState } from 'react';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { FiSearch, FiShoppingCart, FiUser, FiHeart, FiMenu, FiX, FiStar, FiChevronDown, FiFilter } from 'react-icons/fi';
+
+// Import pages
+import Home from './pages/Home';
+import Men from './pages/Men';
+import Women from './pages/Women';
+import Kids from './pages/Kids';
+import NewArrivals from './pages/NewArrivals';
+import Sale from './pages/Sale';
+import Brands from './pages/Brands';
+import TrackOrder from './pages/TrackOrder';
+import Contact from './pages/Contact';
+import StoreLocator from './pages/StoreLocator';
+import PageNotFound from './pages/PageNotFound';
 
 const products = [
   {
@@ -104,6 +118,45 @@ const categories = [
 
 const sizes = ["S", "M", "L", "XL", "XXL", "28", "30", "32", "34", "S/M", "L/XL", "One Size", "Standard"];
 
+// Navigation component
+const Navigation = ({ mobile = false }) => {
+  const location = useLocation();
+  const navItems = [
+    { to: '/men', label: 'Men' },
+    { to: '/women', label: 'Women' },
+    { to: '/kids', label: 'Kids' },
+    { to: '/new-arrivals', label: 'New Arrivals' },
+    { to: '/sale', label: 'Sale' },
+    { to: '/brands', label: 'Brands' },
+  ];
+
+  const baseClasses = mobile 
+    ? 'block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100'
+    : 'px-3 py-2 font-medium hover:text-blue-600';
+  
+  const activeClasses = mobile 
+    ? 'bg-blue-50 text-blue-700' 
+    : 'text-blue-600 border-b-2 border-blue-600';
+
+  return (
+    <>
+      {navItems.map((item) => {
+        const isActive = location.pathname === item.to;
+        return (
+          <Link
+            key={item.to}
+            to={item.to}
+            className={`${baseClasses} ${isActive ? activeClasses : 'text-gray-700'}`}
+          >
+            {item.label}
+          </Link>
+        );
+      })}
+    </>
+  );
+};
+
+// Main App component
 function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
@@ -149,9 +202,9 @@ function App() {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div>Free shipping on orders over $50</div>
           <div className="hidden md:flex space-x-4">
-            <a href="#" className="hover:underline">Track Order</a>
-            <a href="#" className="hover:underline">Contact Us</a>
-            <a href="#" className="hover:underline">Store Locator</a>
+            <Link to="/track-order" className="hover:underline">Track Order</Link>
+            <Link to="/contact" className="hover:underline">Contact Us</Link>
+            <Link to="/store-locator" className="hover:underline">Store Locator</Link>
           </div>
         </div>
       </div>
@@ -167,16 +220,11 @@ function App() {
               >
                 {mobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
               </button>
-              <a href="/" className="text-2xl font-bold text-blue-900">SwimmingClubRwanda</a>
+              <Link to="/" className="text-2xl font-bold text-blue-900">SwimmingClubRwanda</Link>
             </div>
 
             <div className="hidden md:flex items-center space-x-1">
-              <a href="#" className="px-3 py-2 font-medium hover:text-blue-600">Men</a>
-              <a href="#" className="px-3 py-2 font-medium hover:text-blue-600">Women</a>
-              <a href="#" className="px-3 py-2 font-medium hover:text-blue-600">Kids</a>
-              <a href="#" className="px-3 py-2 font-medium hover:text-blue-600">New Arrivals</a>
-              <a href="#" className="px-3 py-2 font-medium hover:text-blue-600">Sale</a>
-              <a href="#" className="px-3 py-2 font-medium hover:text-blue-600">Brands</a>
+              <Navigation />
             </div>
 
             <div className="flex items-center space-x-4">
@@ -222,28 +270,26 @@ function App() {
         {mobileMenuOpen && (
           <div className="md:hidden bg-white border-t border-gray-200">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              <a href="#" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">Men</a>
-              <a href="#" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">Women</a>
-              <a href="#" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">Kids</a>
-              <a href="#" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">New Arrivals</a>
-              <a href="#" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">Sale</a>
-              <a href="#" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">Brands</a>
+              <Navigation mobile />
             </div>
           </div>
         )}
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Hero Banner */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl overflow-hidden mb-8">
-          <div className="max-w-3xl px-8 py-16 sm:py-24">
-            <h1 className="text-4xl font-bold text-white mb-4">Summer Sale Up To 50% Off</h1>
-            <p className="text-xl text-blue-100 mb-6">Shop the latest collection of professional swimming gear</p>
-            <button className="bg-white text-blue-800 px-6 py-3 rounded-full font-medium hover:bg-gray-100 transition-colors">
-              Shop Now
-            </button>
-          </div>
-        </div>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/men" element={<Men />} />
+          <Route path="/women" element={<Women />} />
+          <Route path="/kids" element={<Kids />} />
+          <Route path="/new-arrivals" element={<NewArrivals />} />
+          <Route path="/sale" element={<Sale />} />
+          <Route path="/brands" element={<Brands />} />
+          <Route path="/track-order" element={<TrackOrder />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/store-locator" element={<StoreLocator />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
 
         <div className="flex flex-col md:flex-row gap-8">
           {/* Filters Sidebar */}
